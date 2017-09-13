@@ -22,6 +22,8 @@ class ImageLabeler extends Component {
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       moviesData: ds.cloneWithRows([]),
+      imageUri: "https://image.tmdb.org/t/p/w500_and_h281_bestv2/c24sv2weTHPsmDa7jEMN0m2P3RT.jpg",
+      imageLabel: "Pfft"
     };
   }
 
@@ -29,7 +31,13 @@ class ImageLabeler extends Component {
     this.fetchMoviesData();
   }
 
-  _handlePress() {
+  _handlePress(that) {
+    that.setState((prevState) => {
+        return {
+            imageUri: 'https://image.tmdb.org/t/p/w500_and_h281_bestv2/9E2y5Q7WlCVNEhP5GiVTjhEhx1o.jpg',
+            imageLabel: "Hello!"
+        };
+    });
     console.log('Pressed!');
   }
 
@@ -58,14 +66,27 @@ class ImageLabeler extends Component {
     .catch( error => console.log('Error fetching: ' + error) );
   }
 
+//  render() {
+//    return (
+//      <ListView
+//        dataSource={this.state.moviesData}
+//        renderRow={this.renderRow}
+//        style={styles.container}
+//      />
+//    );
+//  }
+
   render() {
-    return (
-      <ListView
-        dataSource={this.state.moviesData}
-        renderRow={this.renderRow}
-        style={styles.container}
-      />
-    );
+      return (
+          <View style={styles.thumb}>
+            <Image
+              source={{uri:this.state.imageUri}}
+              resizeMode="cover"
+              style={styles.img} />
+            <Button onPress={() => {this._handlePress(this)}} title="Positive">"Hello!"</Button>
+            <Text style={styles.txt}>Spider-Man: {this.state.imageLabel} (Rating: 10)</Text>
+          </View>
+      );
   }
 }
 
