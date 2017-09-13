@@ -13,68 +13,77 @@ import {
   ListView,
   Image,
   Button,
-  TouchableHighlight
 } from 'react-native';
+
 
 class ImageLabeler extends Component {
   constructor(props) {
     super(props);
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      moviesData: ds.cloneWithRows([]),
-      imageUri: "https://image.tmdb.org/t/p/w500_and_h281_bestv2/c24sv2weTHPsmDa7jEMN0m2P3RT.jpg",
-      imageLabel: "Pfft"
+      imageUri: "",
+      imageLabel: "",
+      prevImageUri: "",
+      prevImageLabel: "",
+      nextImageUri: "",
+      nextImageLabel: "",
     };
   }
 
   componentDidMount() {
-    this.fetchMoviesData();
+    this.fetchImage();
   }
 
-  _handlePress(that) {
-    that.setState((prevState) => {
-        return {
-            imageUri: 'https://image.tmdb.org/t/p/w500_and_h281_bestv2/9E2y5Q7WlCVNEhP5GiVTjhEhx1o.jpg',
-            imageLabel: "Hello!"
-        };
+  notCar(that) {
+    if (this.state.nextImageUri !== ""){
+        that.setState({
+            imageUri: this.state.nextImageUri,
+            imageLabel: this.state.nextImageLabel,
+            nextImageUri: "",
+            nextImageLabel: "",
+        });
+    }
+    else{
+        this.fetchImage();
+    }
+  }
+
+  isCar(that) {
+    if (this.state.nextImageUri !== ""){
+        that.setState({
+            imageUri: this.state.nextImageUri,
+            imageLabel: this.state.nextImageLabel,
+            nextImageUri: "",
+            nextImageLabel: "",
+        });
+    }
+    else{
+        this.fetchImage();
+    }
+  }
+
+  reviewDecision(that) {
+    that.setState({
+        imageUri: this.state.prevImageUri,
+        imageLabel: this.state.prevImageLabel,
+        nextImageUri: (this.state.imageUri === this.state.prevImageUri) ? this.state.nextImageUri : this.state.imageUri,
+        nextImageLabel: (this.state.imageLabel === this.state.prevImageLabel) ? this.state.nextImageLabel : this.state.imageLabel,
     });
-    console.log('Pressed!');
   }
 
-  renderRow(rowData){
-    return (
-      <View style={styles.thumb}>
-        <Image
-          source={{uri:'https://image.tmdb.org/t/p/w500_and_h281_bestv2/'+rowData.poster_path}}
-          resizeMode="cover"
-          style={styles.img} />
-        <Button onPress={this._handlePress} title="Positive">"Hello!"</Button>
-        <Text style={styles.txt}>{rowData.title} (Rating: {Math.round( rowData.vote_average * 10 ) / 10})</Text>
-      </View>
-    );
-  }
-
-  fetchMoviesData() {
-    var url = 'http://api.themoviedb.org/3/movie/now_playing?api_key=17e62b78e65bd6b35f038505c1eec409';
+  fetchImage() {
+    var url = 'http://192.168.1.25:5000';
     fetch(url)
       .then( response => response.json() )
       .then( jsonData => {
         this.setState({
-          moviesData: this.state.moviesData.cloneWithRows(jsonData.results),
+          prevImageUri: this.state.imageUri,
+          prevImageLabel: this.state.imageLabel,
+          imageUri: 'http://192.168.1.25:8800/' + jsonData.img_name,
+          imageLabel: jsonData.car_model
         });
       })
     .catch( error => console.log('Error fetching: ' + error) );
   }
-
-//  render() {
-//    return (
-//      <ListView
-//        dataSource={this.state.moviesData}
-//        renderRow={this.renderRow}
-//        style={styles.container}
-//      />
-//    );
-//  }
 
   render() {
       return (
@@ -83,8 +92,12 @@ class ImageLabeler extends Component {
               source={{uri:this.state.imageUri}}
               resizeMode="cover"
               style={styles.img} />
-            <Button onPress={() => {this._handlePress(this)}} title="Positive">"Hello!"</Button>
-            <Text style={styles.txt}>Spider-Man: {this.state.imageLabel} (Rating: 10)</Text>
+            <Text style={styles.txt}>Car model: {this.state.imageLabel}</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+                <Button color="red" onPress={() => {this.notCar(this)}} title="Not car"/>
+                <Button color="blue" onPress={() => {this.reviewDecision(this)}} title="Undo"/>
+                <Button color="green" onPress={() => {this.isCar(this)}} title="  Car  "/>
+            </View>
           </View>
       );
   }
@@ -97,6 +110,7 @@ const styles = StyleSheet.create({
   thumb: {
     backgroundColor: '#ffffff',
     marginBottom: 5,
+    marginTop: 5,
     elevation: 1
   },
   img: {
@@ -106,7 +120,7 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 16,
     textAlign: 'left'
-  }
+  },
 });
 
 AppRegistry.registerComponent('ImageLabeler', () => ImageLabeler);
