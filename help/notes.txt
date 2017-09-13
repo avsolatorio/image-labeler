@@ -1,0 +1,8 @@
+How to run on device - https://facebook.github.io/react-native/docs/running-on-device.html
+
+Sample app - https://codebrahma.com/awesome-react-native-building-android-app-javascript/
+
+Sample app - https://www.raywenderlich.com/165140/react-native-tutorial-building-ios-android-apps-javascript
+
+Sample app - https://school.shoutem.com/lectures/build-react-native-mobile-app-tutorial/
+
