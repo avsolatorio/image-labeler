@@ -14,9 +14,10 @@ import {
   Image,
   Button,
 } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 
 
-class ImageLabeler extends Component {
+class ImageLabelerScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,6 +29,10 @@ class ImageLabeler extends Component {
       nextImageLabel: "",
     };
   }
+
+  static navigationOptions = {
+    title: 'Image Labeler',
+  };
 
   componentDidMount() {
     this.fetchImage();
@@ -123,5 +128,11 @@ const styles = StyleSheet.create({
   },
 });
 
+
+const ImageLabeler = StackNavigator({
+  Home: { screen: ImageLabelerScreen },
+});
+
 AppRegistry.registerComponent('ImageLabeler', () => ImageLabeler);
 
+// AppRegistry.registerComponent('ImageLabeler', () => ImageLabeler);
