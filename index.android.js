@@ -11,7 +11,9 @@ import {
   Text,
   View,
   ListView,
-  Image
+  Image,
+  Button,
+  TouchableHighlight
 } from 'react-native';
 
 class ImageLabeler extends Component {
@@ -27,6 +29,10 @@ class ImageLabeler extends Component {
     this.fetchMoviesData();
   }
 
+  _handlePress() {
+    console.log('Pressed!');
+  }
+
   renderRow(rowData){
     return (
       <View style={styles.thumb}>
@@ -34,7 +40,8 @@ class ImageLabeler extends Component {
           source={{uri:'https://image.tmdb.org/t/p/w500_and_h281_bestv2/'+rowData.poster_path}}
           resizeMode="cover"
           style={styles.img} />
-          <Text style={styles.txt}>{rowData.title} (Rating: {Math.round( rowData.vote_average * 10 ) / 10})</Text>
+        <Button onPress={this._handlePress} title="Positive">"Hello!"</Button>
+        <Text style={styles.txt}>{rowData.title} (Rating: {Math.round( rowData.vote_average * 10 ) / 10})</Text>
       </View>
     );
   }
