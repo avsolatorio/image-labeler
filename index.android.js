@@ -50,6 +50,8 @@ class ImageLabelerScreen extends Component {
             nextImageUri: "",
             nextImageLabel: "",
             nextImagePath: "",
+            car_count: 0,
+            not_car_count: 0,
         });
     }
     else{
@@ -110,7 +112,9 @@ class ImageLabelerScreen extends Component {
           prevImagePath: this.state.imagePath,
           imageUri: 'http://192.168.1.25:8800/' + jsonData.img_name,
           imageLabel: jsonData.car_model,
-          imagePath: jsonData.img_path
+          imagePath: jsonData.img_path,
+          car_count: jsonData.car_count,
+          not_car_count: jsonData.not_car_count,
         });
       })
     .catch( error => console.log('Error fetching: ' + error) );
@@ -124,7 +128,10 @@ class ImageLabelerScreen extends Component {
               resizeMode="cover"
               style={styles.img} />
             <Text style={styles.txt}>Car model: {this.state.imageLabel}</Text>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
+            <Text style={styles.txt}>Tagged as car: {this.state.car_count}</Text>
+            <Text style={styles.txt}>Tagged as not car: {this.state.not_car_count}</Text>
+            <Text style={styles.txt}>Proportion of cars: {Math.round(100 * (100.0 * this.state.car_count) / (this.state.car_count + this.state.not_car_count)) / 100}%</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, marginRight: 10, margin: 20}}>
                 <Button color="tomato" onPress={() => {this.notCar(this)}} title="Not car"/>
                 <Button color="grey" onPress={() => {this.reviewDecision(this)}} title="Undo"/>
                 <Button onPress={() => {this.isCar(this)}} title="  Car  "/>
@@ -141,14 +148,15 @@ const styles = StyleSheet.create({
   thumb: {
     backgroundColor: '#ffffff',
     marginBottom: 5,
-    marginTop: 50,
+    marginTop: 20,
     elevation: 5
   },
   img: {
     height: 300
   },
   txt: {
-    margin: 10,
+    margin: 1,
+    marginLeft: 10,
     fontSize: 16,
     textAlign: 'left'
   },
