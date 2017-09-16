@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
+console.disableYellowBox = true;
 
 class ImageLabelerScreen extends Component {
   constructor(props) {
